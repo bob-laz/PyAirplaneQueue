@@ -23,17 +23,17 @@ class RequestProcess:
         for i in self.inputList:
             print(i)
 
-        # durationSum = 0
-        # for item in self.inputList:
-        #     durationSum += int(item.reqDuration)
-        #     self.scheduler.enterabs(self.now + int(item.reqStart), int(item.subTime), self.processQ)
-        #     self.q.push(item, item.reqStart, item.subTime)
-        # for i in range(durationSum):
-        #     self.scheduler.enterabs(self.now + i, 0, self.printQStatus)
-
     def calcTimes(self, aList):
-        startTime = max(aList[0].getActualStart(), aList[0].getReqStart())
-        return startTime
+        aList[0].setActualStart(max(aList[0].getActualStart(), aList[0].getReqStart()))
+        for i in range(1, len(aList)):
+            offset = aList[i-1].getActualStart() + aList[i-1].getReqDuration()
+            if offset > aList[i].getReqStart():
+                aList[i].setActualStart(offset)
+            else:
+                aList[i].setActualStart(aList[i].getActualStart())
+        for i in range(len(aList)):
+            aList[i].setActualEnd(aList[i].getActualStart() + aList[i].getReqDuration())
+        return aList
 
     def printQStatus(self):
         printVal = ""
