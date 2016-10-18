@@ -23,5 +23,5 @@ class PriorityQueue:
     def QasList(self):
         qList = []
         for item in self._q:
-            qList.append(item)
+            qList.append(self._q.pop())
         return qList

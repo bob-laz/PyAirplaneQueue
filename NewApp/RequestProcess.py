@@ -1,25 +1,26 @@
-import NewApp.Request as Request
-import NewApp.PriorityQ as PriorityQ
+import Request as Request
+import PriorityQ as PriorityQ
 import time
 
 
 class RequestProcess:
-    def __init__(self):
-        self.q = PriorityQ.PriorityQueue()
+    def __init__(self, fileName):
         self.inputList = []
+        self.fileName = fileName
 
-    def processInput(self, fileName):
-        with open(fileName) as inputFile:
+    def processInput(self):
+        with open(self.fileName) as inputFile:
             wholeFile = inputFile.read().splitlines()
             for lines in wholeFile:
                 line = lines.split(',')
                 for i in range(len(line)):
                     line[i] = line[i].strip()
                 self.inputList.append(Request.Request(line[0], line[1], line[2], line[3]))
+        q = PriorityQ.PriorityQueue()
         for i in self.inputList:
-            self.q.push(i, i.getSubTime(), i.getReqStart())
+            q.push(i, i.getSubTime(), i.getReqStart())
         for i in range(len(self.inputList)):
-            self.inputList[i] = self.q.pop()
+            self.inputList[i] = q.pop()
 
     @staticmethod
     def calcTimes(aList):
@@ -52,6 +53,7 @@ class RequestProcess:
         return aList
 
     def run(self):
+        self.processInput()
         currentList = []
         timer = 0
         while True:
@@ -67,8 +69,3 @@ class RequestProcess:
             print(str(timer) + " " + str(currentList))
             time.sleep(1)
             timer += 1
-
-
-rp = RequestProcess()
-rp.processInput("input.txt")
-print(rp.run())
