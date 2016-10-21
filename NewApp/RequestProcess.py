@@ -57,13 +57,19 @@ class RequestProcess:
         retVal = "At time " + str(timer) + " the queue would look like: "
         if len(aList) > 0:
             if len(aList) == 1:
-                retVal += aList[0].getID() + " (started at " + str(aList[0].getActualStart()) + ")"
+                if aList[0].getActualStart() <= timer:
+                    retVal += aList[0].getID() + " (started at " + str(aList[0].getActualStart()) + ")"
+                else:
+                    retVal += aList[0].getID() + " (scheduled for " + str(aList[0].getActualStart()) + ")"
                 return retVal
             else:
-                retVal += aList[0].getID() + " (started at " + str(aList[0].getActualStart()) + "), "
+                if aList[0].getActualStart() <= timer:
+                    retVal += aList[0].getID() + " (started at " + str(aList[0].getActualStart()) + "), "
+                else:
+                    retVal += aList[0].getID() + " (scheduled for " + str(aList[0].getActualStart()) + "), "
             for i in range(1, len(aList)-1):
                 retVal += aList[i].getID() + " (scheduled for " + str(aList[i].getActualStart()) + "), "
-            retVal += aList[len(aList)-1].getID() + " scheduled for " + str(aList[len(aList)-1].getActualStart()) + ")"
+            retVal += aList[len(aList)-1].getID() + " (scheduled for " + str(aList[len(aList)-1].getActualStart()) + ")"
         else:
             retVal += "EMPTY"
         return retVal
@@ -85,7 +91,6 @@ class RequestProcess:
         finalList = []
         timer = 0
         while True:
-            currentList = self.calcTimes(currentList)
             currentList = self.checkRemoval(currentList, timer)
             for i in self.inputList:
                 if i.getSubTime() == timer:
@@ -93,7 +98,7 @@ class RequestProcess:
                     finalList.append(i)
             currentList = self.sortByRequestTime(currentList)
             currentList = self.calcTimes(currentList)
-            if len(currentList) == 0:
+            if len(currentList) == 0 and len(finalList) == len(self.inputList):
                 break
             print(self.formatOutput(currentList, timer))
             time.sleep(1)
