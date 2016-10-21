@@ -1,28 +1,32 @@
-import NewApp.Request as Request
-import NewApp.PriorityQ as PriorityQ
+import Request as Request
+import PriorityQ as PriorityQ
 import time
+
+# TODO: input validation
+# TODO: add comments
 
 
 class RequestProcess:
-    def __init__(self):
-        self.q = PriorityQ.PriorityQueue()
-        self.inputList = []
+    def __init__(self, fileName):
+        self.__inputList = []
+        self.__fileName = fileName
 
-    def processInput(self, fileName):
-        with open(fileName) as inputFile:
+    def __processInput(self):
+        with open(self.__fileName) as inputFile:
             wholeFile = inputFile.read().splitlines()
             for lines in wholeFile:
                 line = lines.split(',')
                 for i in range(len(line)):
                     line[i] = line[i].strip()
-                self.inputList.append(Request.Request(line[0], line[1], line[2], line[3]))
-        for i in self.inputList:
-            self.q.push(i, i.getSubTime(), i.getReqStart())
-        for i in range(len(self.inputList)):
-            self.inputList[i] = self.q.pop()
+                self.__inputList.append(Request.Request(line[0], line[1], line[2], line[3]))
+        q = PriorityQ.PriorityQueue()
+        for i in self.__inputList:
+            q.push(i, i.getSubTime(), i.getReqStart())
+        for i in range(len(self.__inputList)):
+            self.__inputList[i] = q.pop()
 
     @staticmethod
-    def calcTimes(aList):
+    def __calcTimes(aList):
         if len(aList) > 0:
             aList[0].setActualStart(max(int(aList[0].getActualStart()), int(aList[0].getReqStart())))
             for i in range(1, len(aList)):
@@ -36,14 +40,14 @@ class RequestProcess:
         return aList
 
     @staticmethod
-    def checkRemoval(currentList, timer):
+    def __checkRemoval(currentList, timer):
         for i in currentList:
             if i.getActualEnd() <= timer:
                 currentList.remove(i)
         return currentList
 
     @staticmethod
-    def sortByRequestTime(aList):
+    def __sortByRequestTime(aList):
         q1 = PriorityQ.PriorityQueue()
         for i in aList:
             q1.push(i, i.getReqStart(), i.getSubTime())
@@ -51,24 +55,56 @@ class RequestProcess:
             aList[i] = q1.pop()
         return aList
 
+    @staticmethod
+    def __formatOutput(aList, timer):
+        retVal = "At time " + str(timer) + " the queue would look like: "
+        if len(aList) > 0:
+            if len(aList) == 1:
+                if aList[0].getActualStart() <= timer:
+                    retVal += aList[0].getID() + " (started at " + str(aList[0].getActualStart()) + ")"
+                else:
+                    retVal += aList[0].getID() + " (scheduled for " + str(aList[0].getActualStart()) + ")"
+                return retVal
+            else:
+                if aList[0].getActualStart() <= timer:
+                    retVal += aList[0].getID() + " (started at " + str(aList[0].getActualStart()) + "), "
+                else:
+                    retVal += aList[0].getID() + " (scheduled for " + str(aList[0].getActualStart()) + "), "
+            for i in range(1, len(aList)-1):
+                retVal += aList[i].getID() + " (scheduled for " + str(aList[i].getActualStart()) + "), "
+            retVal += aList[len(aList)-1].getID() + " (scheduled for " + str(aList[len(aList)-1].getActualStart()) + ")"
+        else:
+            retVal += "EMPTY"
+        return retVal
+
+    @staticmethod
+    def __finalPrintout(aList):
+        retVal = ""
+        if len(aList) > 0:
+            for i in range(len(aList)-1):
+                retVal += aList[i].getID() + " (" + str(aList[i].getActualStart()) + "-" + str(aList[i].getActualEnd()) + "), "
+            retVal += aList[len(aList)-1].getID() + " (" + str(aList[len(aList)-1].getActualStart()) + "-" + str(aList[len(aList)-1].getActualEnd()) + ")"
+        else:
+            retVal += "Empty input was passed in."
+        return retVal
+
     def run(self):
+        self.__processInput()
         currentList = []
+        finalList = []
         timer = 0
         while True:
-            currentList = self.calcTimes(currentList)
-            currentList = self.checkRemoval(currentList, timer)
-            for i in self.inputList:
+            currentList = self.__checkRemoval(currentList, timer)
+            for i in self.__inputList:
                 if i.getSubTime() == timer:
                     currentList.append(i)
-            currentList = self.sortByRequestTime(currentList)
-            currentList = self.calcTimes(currentList)
-            if len(currentList) == 0:
+                    finalList.append(i)
+            currentList = self.__sortByRequestTime(currentList)
+            currentList = self.__calcTimes(currentList)
+            if len(currentList) == 0 and len(finalList) == len(self.__inputList):
                 break
-            print(str(timer) + " " + str(currentList))
+            print(self.__formatOutput(currentList, timer))
             time.sleep(1)
             timer += 1
-
-
-rp = RequestProcess()
-rp.processInput("input.txt")
-print(rp.run())
+        finalList = self.__sortByRequestTime(finalList)
+        print(self.__finalPrintout(finalList))
