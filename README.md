@@ -3,6 +3,7 @@ This is a program for our Compilers I class. It will simulate an airport take-of
 This program requires an input file. You can edit the source to hard code your input file, then make the file executable. Preferably, you can call "python <filename.py> <input.txt>"
 
 The input file should be a text file in the following format:  
+
 Delta 160, 0, 0, 4, x, x  
 UAL 120, 0, 5, 4, x, x  
 Delta 6, 2, 3, 6, x, x  
