@@ -52,9 +52,37 @@ class RequestProcess:
             aList[i] = q1.pop()
         return aList
 
+    @staticmethod
+    def formatOutput(aList, timer):
+        retVal = "At time " + str(timer) + " the queue would look like: "
+        if len(aList) > 0:
+            if len(aList) == 1:
+                retVal += aList[0].getID() + " (started at " + str(aList[0].getActualStart()) + ")"
+                return retVal
+            else:
+                retVal += aList[0].getID() + " (started at " + str(aList[0].getActualStart()) + "), "
+            for i in range(1, len(aList)-1):
+                retVal += aList[i].getID() + " (scheduled for " + str(aList[i].getActualStart()) + "), "
+            retVal += aList[len(aList)-1].getID() + " scheduled for " + str(aList[len(aList)-1].getActualStart()) + ")"
+        else:
+            retVal += "EMPTY"
+        return retVal
+
+    @staticmethod
+    def finalPrintout(aList):
+        retVal = ""
+        if len(aList) > 0:
+            for i in range(len(aList)-1):
+                retVal += aList[i].getID() + " (" + str(aList[i].getActualStart()) + "-" + str(aList[i].getActualEnd()) + "), "
+            retVal += aList[len(aList)-1].getID() + " (" + str(aList[len(aList)-1].getActualStart()) + "-" + str(aList[len(aList)-1].getActualEnd()) + ")"
+        else:
+            retVal += "Empty input was passed in."
+        return retVal
+
     def run(self):
         self.processInput()
         currentList = []
+        finalList = []
         timer = 0
         while True:
             currentList = self.calcTimes(currentList)
@@ -62,10 +90,13 @@ class RequestProcess:
             for i in self.inputList:
                 if i.getSubTime() == timer:
                     currentList.append(i)
+                    finalList.append(i)
             currentList = self.sortByRequestTime(currentList)
             currentList = self.calcTimes(currentList)
             if len(currentList) == 0:
                 break
-            print(str(timer) + " " + str(currentList))
+            print(self.formatOutput(currentList, timer))
             time.sleep(1)
             timer += 1
+        finalList = self.sortByRequestTime(finalList)
+        print(self.finalPrintout(finalList))
