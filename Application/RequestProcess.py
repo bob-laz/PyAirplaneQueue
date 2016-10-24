@@ -11,6 +11,21 @@ Snakes On A Plane
 This class uses the python time module as well as the Request and PriorityQ classes that I defined, which as also
 located in the Application package.
 
+Most of the functionality of the project is within this class. This class takes in an input file, verifies it is in the
+correct format of:
+
+Delta 160, 0, 0, 4
+UAL 120, 0, 5, 4
+Delta 6, 2, 3, 6
+
+The following parameters are: request identifier, request submission time, time slot requested, length of time
+requested. Additional constraints on input include: the request identifier must be a string containing at least one
+character, the request submission time, time slot request and length of time requested values must be integers and the
+time slot requested must be greater than or equal to the request submission time. The program will not run and will
+instead display an error message if invalid input or file format is passed in.
+
+You can use the above input as sample input or create your own.
+
 
 
 """
@@ -22,22 +37,26 @@ class RequestProcess:
         self.__file_name = file_name
 
     def __process_input(self):
-        with open(self.__file_name) as input_file:
-            whole_file = input_file.read().splitlines()
-            for i in range(len(whole_file)):
-                whole_file[i] = whole_file[i].split(',')
-                for j in range(len(whole_file[i])):
-                    whole_file[i][j] = whole_file[i][j].strip()
-        if self.__validate_input(whole_file):
-            for item in whole_file:
-                self.__input_list.append(Request.Request(item[0], int(item[1]), int(item[2]), int(item[3])))
-            q = PriorityQ.PriorityQueue()
-            for i in self.__input_list:
-                q.push(i, i.get_sub_time(), i.get_req_start())
-            for i in range(len(self.__input_list)):
-                self.__input_list[i] = q.pop()
-            return True
+        if self.__file_name.endswith('.txt') or self.__file_name.endswith('.csv'):
+            with open(self.__file_name) as input_file:
+                whole_file = input_file.read().splitlines()
+                for i in range(len(whole_file)):
+                    whole_file[i] = whole_file[i].split(',')
+                    for j in range(len(whole_file[i])):
+                        whole_file[i][j] = whole_file[i][j].strip()
+            if self.__validate_input(whole_file):
+                for item in whole_file:
+                    self.__input_list.append(Request.Request(item[0], int(item[1]), int(item[2]), int(item[3])))
+                q = PriorityQ.PriorityQueue()
+                for i in self.__input_list:
+                    q.push(i, i.get_sub_time(), i.get_req_start())
+                for i in range(len(self.__input_list)):
+                    self.__input_list[i] = q.pop()
+                return True
+            else:
+                return False
         else:
+            print("Please ensure input file is a .txt or .csv file")
             return False
 
     @staticmethod
