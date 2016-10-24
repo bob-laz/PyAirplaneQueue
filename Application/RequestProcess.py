@@ -8,6 +8,11 @@ Compilers I
 10/23/16
 Snakes On A Plane
 
+This class uses the python time module as well as the Request and PriorityQ classes that I defined, which as also
+located in the Application package.
+
+
+
 """
 
 
