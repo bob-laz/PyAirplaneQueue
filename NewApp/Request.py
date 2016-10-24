@@ -2,40 +2,41 @@ class Request:
 
     # Request time must be >= submission time
 
-    def __init__(self, ID, subTime, reqStart, reqDuration):
-        self.__ID = ID
-        self.__subTime = int(subTime)
-        self.__reqStart = int(reqStart)
-        self.__reqDuration = int(reqDuration)
-        self.__actualStart = 0
-        self.__actualEnd = 0
+    def __init__(self, req_id, sub_time, req_start, req_duration):
+        self.__id = req_id
+        self.__sub_time = int(sub_time)
+        self.__req_start = int(req_start)
+        self.__req_duration = int(req_duration)
+        self.__actual_start = 0
+        self.__actual_end = 0
 
     def __str__(self):
-        return "[" + self.__ID + ", " + str(self.__subTime) + ", " + str(self.__reqStart) + ", " + str(self.__reqDuration) + ", " + str(self.__actualStart) + ", " + str(self.__actualEnd) + "]"
+        return "[" + self.__id + ", " + str(self.__sub_time) + ", " + str(self.__req_start) + ", " + \
+               str(self.__req_duration) + ", " + str(self.__actual_start) + ", " + str(self.__actual_end) + "]"
 
     def __repr__(self):
         return str(self)
 
-    def getSubTime(self):
-        return self.__subTime
+    def get_sub_time(self):
+        return self.__sub_time
 
-    def getReqStart(self):
-        return self.__reqStart
+    def get_req_start(self):
+        return self.__req_start
 
-    def getActualStart(self):
-        return self.__actualStart
+    def get_actual_start(self):
+        return self.__actual_start
 
-    def getID(self):
-        return self.__ID
+    def get_id(self):
+        return self.__id
 
-    def getActualEnd(self):
-        return self.__actualEnd
+    def get_actual_end(self):
+        return self.__actual_end
 
-    def getReqDuration(self):
-        return self.__reqDuration
+    def get_req_duration(self):
+        return self.__req_duration
 
-    def setActualStart(self, start):
-        self.__actualStart = start
+    def set_actual_start(self, start):
+        self.__actual_start = start
 
-    def setActualEnd(self, end):
-        self.__actualEnd = end
+    def set_actual_end(self, end):
+        self.__actual_end = end

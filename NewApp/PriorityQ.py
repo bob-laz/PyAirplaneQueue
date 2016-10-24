@@ -15,13 +15,3 @@ class PriorityQueue:
 
     def empty(self):
         return len(self.__q) == 0
-
-    def printQ(self):
-        for item in self.__q:
-            print(item)
-
-    def QasList(self):
-        qList = []
-        for item in self.__q:
-            qList.append(self.__q.pop())
-        return qList

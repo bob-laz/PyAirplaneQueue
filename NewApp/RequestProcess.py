@@ -7,104 +7,104 @@ import time
 
 
 class RequestProcess:
-    def __init__(self, fileName):
+    def __init__(self, file_name):
         self.__inputList = []
-        self.__fileName = fileName
+        self.__fileName = file_name
 
-    def __processInput(self):
+    def __process_input(self):
         with open(self.__fileName) as inputFile:
-            wholeFile = inputFile.read().splitlines()
-            for lines in wholeFile:
+            whole_file = inputFile.read().splitlines()
+            for lines in whole_file:
                 line = lines.split(',')
                 for i in range(len(line)):
                     line[i] = line[i].strip()
                 self.__inputList.append(Request.Request(line[0], line[1], line[2], line[3]))
         q = PriorityQ.PriorityQueue()
         for i in self.__inputList:
-            q.push(i, i.getSubTime(), i.getReqStart())
+            q.push(i, i.get_sub_time(), i.get_req_start())
         for i in range(len(self.__inputList)):
             self.__inputList[i] = q.pop()
 
     @staticmethod
-    def __calcTimes(aList):
-        if len(aList) > 0:
-            aList[0].setActualStart(max(int(aList[0].getActualStart()), int(aList[0].getReqStart())))
-            for i in range(1, len(aList)):
-                offset = aList[i-1].getActualStart() + aList[i-1].getReqDuration()
-                if offset > aList[i].getReqStart():
-                    aList[i].setActualStart(offset)
+    def __calc_times(a_list):
+        if len(a_list) > 0:
+            a_list[0].set_actual_start(max(int(a_list[0].get_actual_start()), int(a_list[0].get_req_start())))
+            for i in range(1, len(a_list)):
+                offset = a_list[i - 1].get_actual_start() + a_list[i - 1].get_req_duration()
+                if offset > a_list[i].get_req_start():
+                    a_list[i].set_actual_start(offset)
                 else:
-                    aList[i].setActualStart(aList[i].getActualStart())
-            for i in range(len(aList)):
-                aList[i].setActualEnd(aList[i].getActualStart() + aList[i].getReqDuration())
-        return aList
+                    a_list[i].set_actual_start(a_list[i].get_actual_start())
+            for i in range(len(a_list)):
+                a_list[i].set_actual_end(a_list[i].get_actual_start() + a_list[i].get_req_duration())
+        return a_list
 
     @staticmethod
-    def __checkRemoval(currentList, timer):
-        for i in currentList:
-            if i.getActualEnd() <= timer:
-                currentList.remove(i)
-        return currentList
+    def __check_removal(current_list, timer):
+        for i in current_list:
+            if i.get_actual_end() <= timer:
+                current_list.remove(i)
+        return current_list
 
     @staticmethod
-    def __sortByRequestTime(aList):
+    def __sort_by_request_time(a_list):
         q1 = PriorityQ.PriorityQueue()
-        for i in aList:
-            q1.push(i, i.getReqStart(), i.getSubTime())
-        for i in range(len(aList)):
-            aList[i] = q1.pop()
-        return aList
+        for i in a_list:
+            q1.push(i, i.get_req_start(), i.get_sub_time())
+        for i in range(len(a_list)):
+            a_list[i] = q1.pop()
+        return a_list
 
     @staticmethod
-    def __formatOutput(aList, timer):
-        retVal = "At time " + str(timer) + " the queue would look like: "
-        if len(aList) > 0:
-            if len(aList) == 1:
-                if aList[0].getActualStart() <= timer:
-                    retVal += aList[0].getID() + " (started at " + str(aList[0].getActualStart()) + ")"
+    def __format_output(a_list, timer):
+        ret_val = "At time " + str(timer) + " the queue would look like: "
+        if len(a_list) > 0:
+            if len(a_list) == 1:
+                if a_list[0].get_actual_start() <= timer:
+                    ret_val += a_list[0].get_id() + " (started at " + str(a_list[0].get_actual_start()) + ")"
                 else:
-                    retVal += aList[0].getID() + " (scheduled for " + str(aList[0].getActualStart()) + ")"
-                return retVal
+                    ret_val += a_list[0].get_id() + " (scheduled for " + str(a_list[0].get_actual_start()) + ")"
+                return ret_val
             else:
-                if aList[0].getActualStart() <= timer:
-                    retVal += aList[0].getID() + " (started at " + str(aList[0].getActualStart()) + "), "
+                if a_list[0].get_actual_start() <= timer:
+                    ret_val += a_list[0].get_id() + " (started at " + str(a_list[0].get_actual_start()) + "), "
                 else:
-                    retVal += aList[0].getID() + " (scheduled for " + str(aList[0].getActualStart()) + "), "
-            for i in range(1, len(aList)-1):
-                retVal += aList[i].getID() + " (scheduled for " + str(aList[i].getActualStart()) + "), "
-            retVal += aList[len(aList)-1].getID() + " (scheduled for " + str(aList[len(aList)-1].getActualStart()) + ")"
+                    ret_val += a_list[0].get_id() + " (scheduled for " + str(a_list[0].get_actual_start()) + "), "
+            for i in range(1, len(a_list)-1):
+                ret_val += a_list[i].get_id() + " (scheduled for " + str(a_list[i].get_actual_start()) + "), "
+            ret_val += a_list[len(a_list) - 1].get_id() + " (scheduled for " + str(a_list[len(a_list) - 1].get_actual_start()) + ")"
         else:
-            retVal += "EMPTY"
-        return retVal
+            ret_val += "EMPTY"
+        return ret_val
 
     @staticmethod
-    def __finalPrintout(aList):
-        retVal = ""
-        if len(aList) > 0:
-            for i in range(len(aList)-1):
-                retVal += aList[i].getID() + " (" + str(aList[i].getActualStart()) + "-" + str(aList[i].getActualEnd()) + "), "
-            retVal += aList[len(aList)-1].getID() + " (" + str(aList[len(aList)-1].getActualStart()) + "-" + str(aList[len(aList)-1].getActualEnd()) + ")"
+    def __final_printout(a_list):
+        ret_val = ""
+        if len(a_list) > 0:
+            for i in range(len(a_list)-1):
+                ret_val += a_list[i].get_id() + " (" + str(a_list[i].get_actual_start()) + "-" + str(a_list[i].get_actual_end()) + "), "
+            ret_val += a_list[len(a_list) - 1].get_id() + " (" + str(a_list[len(a_list) - 1].get_actual_start()) + "-" + str(a_list[len(a_list) - 1].get_actual_end()) + ")"
         else:
-            retVal += "Empty input was passed in."
-        return retVal
+            ret_val += "Empty input was passed in."
+        return ret_val
 
     def run(self):
-        self.__processInput()
-        currentList = []
-        finalList = []
+        self.__process_input()
+        current_list = []
+        final_list = []
         timer = 0
         while True:
-            currentList = self.__checkRemoval(currentList, timer)
+            current_list = self.__check_removal(current_list, timer)
             for i in self.__inputList:
-                if i.getSubTime() == timer:
-                    currentList.append(i)
-                    finalList.append(i)
-            currentList = self.__sortByRequestTime(currentList)
-            currentList = self.__calcTimes(currentList)
-            if len(currentList) == 0 and len(finalList) == len(self.__inputList):
+                if i.get_sub_time() == timer:
+                    current_list.append(i)
+                    final_list.append(i)
+            current_list = self.__sort_by_request_time(current_list)
+            current_list = self.__calc_times(current_list)
+            if len(current_list) == 0 and len(final_list) == len(self.__inputList):
                 break
-            print(self.__formatOutput(currentList, timer))
+            print(self.__format_output(current_list, timer))
             time.sleep(1)
             timer += 1
-        finalList = self.__sortByRequestTime(finalList)
-        print(self.__finalPrintout(finalList))
+        final_list = self.__sort_by_request_time(final_list)
+        print(self.__final_printout(final_list))
