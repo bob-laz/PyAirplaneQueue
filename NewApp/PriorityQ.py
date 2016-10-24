@@ -1,5 +1,13 @@
 import heapq
 
+"""
+Bob Laskowski
+Compilers I
+10/23/16
+Snakes On A Plane
+
+"""
+
 
 class PriorityQueue:
     def __init__(self):

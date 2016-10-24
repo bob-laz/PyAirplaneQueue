@@ -1,6 +1,13 @@
-class Request:
+"""
+Bob Laskowski
+Compilers I
+10/23/16
+Snakes On A Plane
 
-    # Request time must be >= submission time
+"""
+
+
+class Request:
 
     def __init__(self, req_id, sub_time, req_start, req_duration):
         self.__id = req_id

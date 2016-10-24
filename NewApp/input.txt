@@ -1,3 +1,6 @@
-Delta 6, 2, 3, 6
-BOB 420, 2, 4, 5
+Delta 6, 5, 6, 5
+BOB 4, 2, 4, 5
 Greg 6, 17, 18, 2
+UAL 100, 5, 6, 5
+United 56, 5, 6, 5
+Hawaiian 45, 10, 15, 3
