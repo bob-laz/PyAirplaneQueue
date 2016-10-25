@@ -6,12 +6,4 @@ Delta 160, 0, 0, 4
 UAL 120, 0, 5, 4  
 Delta 6, 2, 3, 6  
 
-<<<<<<< HEAD
-Delta 160, 0, 0, 4, x, x  
-UAL 120, 0, 5, 4, x, x  
-Delta 6, 2, 3, 6, x, x  
-
-The following parameters are: request identifier, request submission time, time slot requested, length of time requested, actual start time, actual end time. The last two slots, currently x's, will be updates when the program is run.
-=======
 The following parameters are: request identifier, request submission time, time slot requested, length of time requested. Additional constraints on input include: the request identifier must be a string containing at least one character, the request submission time, time slot request and length of time requested values must be integers and the time slot requested must be greater than or equal to the request submission time. The program will not run and will instead display an error message if invalid input is passed in.
->>>>>>> working
