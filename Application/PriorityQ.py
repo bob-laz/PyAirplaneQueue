@@ -42,7 +42,7 @@ class PriorityQueue:
 
     """
     Returns true if the queue is empty, false otherwise. This is determined by checking to see if the length of the list
-    storing the queue is equal to zero. 
+    storing the queue is equal to zero.
     """
     def empty(self):
         return len(self.__q) == 0
